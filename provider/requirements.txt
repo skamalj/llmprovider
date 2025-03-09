@@ -1,0 +1,7 @@
+requests
+langchain
+langchain-google-genai
+langchain-anthropic
+langchain-aws 
+langchain-ollama
+langchain-huggingface
