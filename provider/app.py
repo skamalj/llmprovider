@@ -1,4 +1,4 @@
-import pickle
+import dill
 import json
 import os
 from langchain_openai import ChatOpenAI
@@ -32,7 +32,7 @@ def get_model(provider: str, model_name: str, base_url: str, **kwargs):
     else:
         raise ValueError("Unsupported provider")
     
-    return pickle.dumps(model)
+    return dill.dumps(model)
 
 base_url = os.environ["BASE_APIGW_URL"] 
 default_headers = {"x-api-key": os.environ["APIGW_KEY"]}
