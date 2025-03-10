@@ -1,20 +1,18 @@
 import pickle
 import json
 import os
-from langchain.chat_models import ChatOpenAI
-from langchain.llms import OpenAI
+from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
-from langchain_aws import BedrockLLM
+from langchain_aws import ChatBedrock
 from langchain_ollama import ChatOllama
-from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace
 
 def get_model(provider: str, model_name: str, base_url: str, **kwargs):
     """
     Creates and returns a pickled model from LangChain for OpenAI, Gemini, Anthropic, AWS Bedrock, Ollama, or Hugging Face.
     
     Args:
-        provider (str): The LLM provider ("openai", "gemini", "anthropic", "bedrock", "ollama", "huggingface").
+        provider (str): The LLM provider ("openai", "gemini", "anthropic", "bedrock", "ollama").
         model_name (str): The name of the model (e.g., "gpt-4", "gemini-pro", "claude-3", "amazon.titan-tg1", "mistral", "meta-llama").
         **kwargs: Additional parameters to pass into the model instantiation.
         
@@ -28,12 +26,9 @@ def get_model(provider: str, model_name: str, base_url: str, **kwargs):
     elif provider == "anthropic":
         model = ChatAnthropic(model=model_name, base_url=base_url, **kwargs)
     elif provider == "bedrock":
-        model = BedrockLLM(model_id=model_name, base_url=base_url, **kwargs)
+        model = ChatBedrock(model_id=model_name, base_url=base_url, **kwargs)
     elif provider == "ollama":
         model = ChatOllama(model=model_name, base_url=base_url, **kwargs)
-    elif provider == "huggingface":
-        endpoint = HuggingFaceEndpoint(repo_id=model_name, base_url=base_url, **kwargs)
-        model = ChatHuggingFace(endpoint=endpoint)
     else:
         raise ValueError("Unsupported provider")
     

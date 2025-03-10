@@ -1,5 +1,7 @@
 requests
 langchain
+langchain-openai
 langchain-google-genai
 langchain-anthropic
 langchain-aws
+langchain-community
