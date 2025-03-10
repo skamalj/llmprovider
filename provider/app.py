@@ -20,11 +20,11 @@ def get_model(provider: str, model_name: str, base_url: str, **kwargs):
         Pickled model instance
     """
     if provider == "openai":
-        model = ChatOpenAI(model_name=model_name, base_url=base_url, **kwargs)
+        model = ChatOpenAI(model_name=model_name, base_url=f"{base_url}/openai", **kwargs)
     elif provider == "google":
-        model = ChatGoogleGenerativeAI(model=model_name, base_url=base_url,**kwargs)
+        model = ChatGoogleGenerativeAI(model=model_name, base_url=f"{base_url}/google",**kwargs)
     elif provider == "anthropic":
-        model = ChatAnthropic(model=model_name, base_url=base_url, **kwargs)
+        model = ChatAnthropic(model=model_name, base_url=f"{base_url}/anthropic", **kwargs)
     elif provider == "bedrock":
         model = ChatBedrock(model_id=model_name, base_url=base_url, **kwargs)
     elif provider == "ollama":

@@ -16,7 +16,12 @@ model_request_payload = {
     }
 }
 
-response = requests.get(f"{BASE_APIGW_URL}/model", json=model_request_payload)
+HEADERS = {
+    "Content-Type": "application/json",
+    "Accept": "application/json"  # Explicitly request JSON response
+}
+
+response = requests.get(f"{BASE_APIGW_URL}/model", headers=HEADERS, json=model_request_payload)
 print(response)
 response_data = response.json()
 
