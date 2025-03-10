@@ -8,9 +8,9 @@ BASE_APIGW_URL = os.environ["BASE_APIGW_URL"]
 
 # Step 1: Request the model from API Gateway
 model_request_payload = {
-    "provider": "openai",    # Choose: "openai", "google", "anthropic", "bedrock", "ollama"
-    "model_name": "gpt-4o",  # Specify the model
-    "params": {              # Optional model parameters
+    "provider": "openai",    
+    "model_name": "gpt-4o",  
+    "params": {              
         "temperature": 0.7,
         "max_tokens": 100
     }
@@ -18,9 +18,14 @@ model_request_payload = {
 
 HEADERS = {
     "Content-Type": "application/json",
-    "Accept": "application/json"  # Explicitly request JSON response
+    "Accept": "*/*",  # Explicitly request JSON response
+    "User-Agent": "Application",
+    'Access-Control-Allow-Origin': '*',
+    'Access-Control-Allow-Headers': '*',
+    'Access-Control-Allow-Methods': 'POST'
 }
 
+print(f"{BASE_APIGW_URL}/model")
 response = requests.get(f"{BASE_APIGW_URL}/model", headers=HEADERS, json=model_request_payload)
 print(response)
 response_data = response.json()
