@@ -16,7 +16,7 @@ Resources:
     Properties:
       CodeUri: provider/
       Handler: app.lambda_handler
-      Runtime: python3.
+      Runtime: python3.12
       MemorySize: 1024
       Timeout: 180
       Architectures:
