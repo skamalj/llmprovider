@@ -6,6 +6,7 @@ RUN echo ${LAMBDA_TASK_ROOT}
 # Copy app.py and requirements.txt
 COPY requirements.txt ${LAMBDA_TASK_ROOT}
 COPY app.py  ${LAMBDA_TASK_ROOT}
+ADD config ${LAMBDA_TASK_ROOT}/config
 
 # Install the dependencies
 RUN pip install -r requirements.txt
