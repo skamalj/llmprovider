@@ -54,7 +54,7 @@ def lambda_handler(event, context):
         body = json.loads(event.get("body", "{}"))
         provider = body.get("provider")
         model_name = body.get("model_name")
-        messages = body.get("messages")
+        messages = json.loads(body.get("messages"))
         additional_params = body.get("params", {})
 
         if not provider or not model_name or not messages:
