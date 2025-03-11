@@ -7,3 +7,4 @@ langchain-aws
 langchain-community
 langchain-ollama
 dill
+nemoguardrails
