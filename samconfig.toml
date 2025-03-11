@@ -15,6 +15,8 @@ lint = true
 capabilities = "CAPABILITY_IAM"
 confirm_changeset = true
 resolve_s3 = true
+s3_prefix = "llm-model-provider"
+image_repositories = ["ModelProviderFunction=010526271896.dkr.ecr.ap-south-1.amazonaws.com/model-provider"]
 
 [default.package.parameters]
 resolve_s3 = true

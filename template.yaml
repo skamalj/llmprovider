@@ -14,9 +14,7 @@ Resources:
   ModelProviderFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      CodeUri: provider/
-      Handler: app.lambda_handler
-      Runtime: python3.12
+      PackageType: Image
       MemorySize: 512
       Timeout: 180
       Architectures:
@@ -27,6 +25,10 @@ Resources:
           Properties:
             Path: /model
             Method: post
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./provider
+      DockerTag: latest
 
 Outputs:
   # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function

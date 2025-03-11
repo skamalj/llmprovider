@@ -1,0 +1,14 @@
+FROM public.ecr.aws/lambda/python:3.12
+
+# Install c++ compiler
+RUN dnf update -y && dnf install -y gcc g++
+RUN echo ${LAMBDA_TASK_ROOT}
+# Copy app.py and requirements.txt
+COPY requirements.txt ${LAMBDA_TASK_ROOT}
+COPY app.py  ${LAMBDA_TASK_ROOT}
+
+# Install the dependencies
+RUN pip install -r requirements.txt
+
+# CMD to handler
+CMD ["app.lambda_handler"]
