@@ -29,7 +29,7 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
         elif provider == "google":
             model = ChatGoogleGenerativeAI(model=model_name, base_url=f"{base_url}/google", **kwargs)
         elif provider == "anthropic":
-            model = ChatAnthropic(model=model_name, base_url=f"{base_url}/anthropic", **kwargs)
+            model = ChatAnthropic(model=model_name, base_url=f"{base_url}/anthropic/", **kwargs)
         elif provider == "bedrock":
             model = ChatBedrock(model_id=model_name, base_url=base_url, **kwargs)
         elif provider == "ollama":
