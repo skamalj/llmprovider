@@ -38,7 +38,8 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
             raise ValueError(f"Unsupported provider: {provider}")
 
         rails = LLMRails(config, llm=model)
-        return model.invoke(messages=messages)
+        print(messages)
+        return rails.generate(messages)
 
     except Exception as e:
         error_details = traceback.format_exc()
