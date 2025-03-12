@@ -25,7 +25,7 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
         config = RailsConfig.from_path("./config")
 
         if provider == "openai":
-            model = ChatOpenAI(model_name=model_name, base_url=f"{base_url}/openai", **kwargs)
+            model = ChatOpenAI(model_name=model_name, base_url=f"{base_url}/openai/", **kwargs)
         elif provider == "google":
             model = ChatGoogleGenerativeAI(model=model_name, base_url=f"{base_url}/google", **kwargs)
         elif provider == "anthropic":
@@ -39,7 +39,9 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
 
         rails = LLMRails(config, llm=model)
         print(messages)
-        return rails.generate(messages)
+
+
+        return rails.generate(json.dumps(messages))
 
     except Exception as e:
         error_details = traceback.format_exc()
