@@ -8,6 +8,7 @@ from langchain_anthropic import ChatAnthropic
 from langchain_aws import ChatBedrock
 from langchain_ollama import ChatOllama
 from nemoguardrails import RailsConfig, LLMRails
+from loadsecrets import load_secrets
 
 def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs):
     """
@@ -48,6 +49,14 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
         print(f"Error in get_model: {error_details}")  # Log stack trace
         raise RuntimeError(f"Failed to generate response: {str(e)}") from e
 
+env_secret_map = {
+    "BASE_APIGW_URL": "LLMFunctionUrlSecret",
+    "APIGW_KEY": "LLMGWApiKeySecret",
+    "ANTHROPIC_API_KEY": "AnthropicAPIKey",
+    "OPENAI_API_KEY":"OpenAIAPIKey",
+    "GOOGLE_API_KEY": "GeminiAPIKey"
+}
+load_secrets(env_secret_map)
 
 base_url = os.environ.get("BASE_APIGW_URL")
 default_headers = {"x-api-key": os.environ.get("APIGW_KEY")}
