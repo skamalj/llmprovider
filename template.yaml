@@ -14,8 +14,6 @@ Resources:
   ModelProviderFunction:
     Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
     Properties:
-      Layers:
-        - arn:aws:lambda:ap-south-1:176022468876:layer:AWS-Parameters-and-Secrets-Lambda-Extension:12
       PackageType: Image
       MemorySize: 512
       Timeout: 180
