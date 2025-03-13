@@ -62,6 +62,8 @@ def lambda_handler(event, context):
 
         if not provider or not model_name or not messages:
             raise ValueError("Both 'provider', 'model_name', and 'messages' are required.")
+        if provider == "anthropic":
+            default_headers["anthropic-api-key"] = os.environ.get("ANTHROPIC_API_KEY","XX")
 
         response = get_model(provider, model_name, messages, base_url=base_url, default_headers=default_headers, **additional_params)
 
