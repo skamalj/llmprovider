@@ -42,13 +42,6 @@ Resources:
               name: x-api-key
               in: header
 
-  ModelProviderStage:
-    Type: AWS::ApiGateway::Stage
-    Properties:
-      StageName: ProdV2
-      RestApiId: !Ref ModelProviderApi
-      DeploymentId: !Ref ModelProviderDeployment
-
   ModelProviderDeployment:
     Type: AWS::ApiGateway::Deployment
     Properties:
