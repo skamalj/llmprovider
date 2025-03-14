@@ -13,35 +13,17 @@ Resources:
   ModelProviderApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prod
+      StageName: "prodv2"
       Auth:
-        ApiKeyRequired: true
-      DefinitionBody:
-        openapi: "3.0.1"
-        info:
-          title: "ModelProvider API"
-          version: "1.0"
-        paths:
-          /model:
-            post:
-              responses:
-                "200":
-                  description: "Success"
-              security:
-                - api_key: []
-              x-amazon-apigateway-integration:
-                type: aws_proxy
-                httpMethod: POST
-                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ModelProviderFunction.Arn}/invocations"
-                passthroughBehavior: when_no_match
-                integrationResponses: []
-        components:
-          securitySchemes:
-            api_key:
-              type: apiKey
-              name: x-api-key
-              in: header
-
+        UsagePlan:
+          CreateUsagePlan: PER_API
+          Description: Usage plan for this API
+          Quota:
+            Limit: 500
+            Period: WEEK
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
   ModelProviderFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -54,7 +36,8 @@ Resources:
         ModelInvoke:
           Type: Api
           Properties:
-            RestApiId: !Ref ModelProviderApi
+            RestApiId: 
+              Ref: ModelProviderApi
             Path: /model
             Method: post
             Auth:
@@ -75,19 +58,10 @@ Resources:
       DockerContext: ./provider
       DockerTag: latest
 
-  ModelProviderApiKey:
-    Type: AWS::ApiGateway::ApiKey
-    Properties:
-      Name: ModelProviderApiKey
-      Enabled: true
-      StageKeys:
-        - RestApiId: !Ref ModelProviderApi
-          StageName: Prod
-
 Outputs:
   ModelProviderApiUrl:
     Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ModelProviderApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/model/"
+    Value: !Sub "https://${ModelProviderApi}.execute-api.${AWS::Region}.amazonaws.com/ProdV2/model/"
 
   ModelProviderApiKey:
     Description: "API Key for accessing the Model Provider API"
