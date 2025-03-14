@@ -42,6 +42,21 @@ Resources:
               name: x-api-key
               in: header
 
+  ModelProviderStage:
+    Type: AWS::ApiGateway::Stage
+    Properties:
+      StageName: Prod
+      RestApiId: !Ref ModelProviderApi
+      DeploymentId: !Ref ModelProviderDeployment
+
+  ModelProviderDeployment:
+    Type: AWS::ApiGateway::Deployment
+    Properties:
+      RestApiId: !Ref ModelProviderApi
+      Description: "Deployment for Model Provider API"
+    DependsOn:
+      - ModelProviderApi
+
   ModelProviderFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -82,7 +97,7 @@ Resources:
       Enabled: true
       StageKeys:
         - RestApiId: !Ref ModelProviderApi
-          StageName: Prod
+          StageName: !Ref ModelProviderStage
 
 Outputs:
   ModelProviderApiUrl:
