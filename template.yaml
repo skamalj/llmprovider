@@ -90,7 +90,7 @@ Resources:
       Enabled: true
       StageKeys:
         - RestApiId: !Ref ModelProviderApi
-          StageName: !Ref ModelProviderStage
+          StageName: ProdV2
 
 Outputs:
   ModelProviderApiUrl:
