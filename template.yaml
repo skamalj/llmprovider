@@ -16,6 +16,31 @@ Resources:
       StageName: Prod
       Auth:
         ApiKeyRequired: true
+      DefinitionBody:
+        openapi: "3.0.1"
+        info:
+          title: "ModelProvider API"
+          version: "1.0"
+        paths:
+          /model:
+            post:
+              responses:
+                "200":
+                  description: "Success"
+              security:
+                - api_key: []
+              x-amazon-apigateway-integration:
+                type: aws_proxy
+                httpMethod: POST
+                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ModelProviderFunction.Arn}/invocations"
+                passthroughBehavior: when_no_match
+                integrationResponses: []
+        components:
+          securitySchemes:
+            api_key:
+              type: apiKey
+              name: x-api-key
+              in: header
 
   ModelProviderFunction:
     Type: AWS::Serverless::Function
@@ -49,31 +74,6 @@ Resources:
       Dockerfile: Dockerfile
       DockerContext: ./provider
       DockerTag: latest
-
-  ModelProviderUsagePlan:
-    Type: AWS::Serverless::Api
-    Properties:
-      Name: ModelProviderUsagePlan
-      StageName: Prod
-      DefinitionBody:
-        openapi: "3.0.1"
-        info:
-          title: "ModelProvider API"
-          version: "1.0"
-        paths:
-          /model:
-            post:
-              responses:
-                "200":
-                  description: "Success"
-              security:
-                - api_key: []
-        components:
-          securitySchemes:
-            api_key:
-              type: apiKey
-              name: x-api-key
-              in: header
 
   ModelProviderApiKey:
     Type: AWS::ApiGateway::ApiKey
