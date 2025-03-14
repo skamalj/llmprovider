@@ -13,7 +13,7 @@ Resources:
   ModelProviderApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: Prod
+      StageName: ProdV2
       Auth:
         ApiKeyRequired: true
       DefinitionBody:
@@ -45,7 +45,7 @@ Resources:
   ModelProviderStage:
     Type: AWS::ApiGateway::Stage
     Properties:
-      StageName: Prod
+      StageName: ProdV2
       RestApiId: !Ref ModelProviderApi
       DeploymentId: !Ref ModelProviderDeployment
 
@@ -102,7 +102,7 @@ Resources:
 Outputs:
   ModelProviderApiUrl:
     Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ModelProviderApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/model/"
+    Value: !Sub "https://${ModelProviderApi}.execute-api.${AWS::Region}.amazonaws.com/ProdV2/model/"
 
   ModelProviderApiKey:
     Description: "API Key for accessing the Model Provider API"
