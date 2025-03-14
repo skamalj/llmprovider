@@ -13,7 +13,7 @@ Resources:
   ModelProviderApi:
     Type: AWS::Serverless::Api
     Properties:
-      StageName: ProdV2
+      StageName: "prodv2"
       Auth:
         ApiKeyRequired: true
       DefinitionBody:
@@ -90,7 +90,7 @@ Resources:
       Enabled: true
       StageKeys:
         - RestApiId: !Ref ModelProviderApi
-          StageName: ProdV2
+          StageName: "prodv2"
 
 Outputs:
   ModelProviderApiUrl:
