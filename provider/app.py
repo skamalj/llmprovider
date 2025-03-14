@@ -5,7 +5,7 @@ import traceback
 from langchain_openai import ChatOpenAI
 from langchain_google_genai import ChatGoogleGenerativeAI
 from langchain_anthropic import ChatAnthropic
-from langchain_aws import ChatBedrock
+from langchain_aws import ChatBedrockConverse
 from langchain_ollama import ChatOllama
 from nemoguardrails import RailsConfig, LLMRails
 from loadsecrets import load_secrets
@@ -32,7 +32,7 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
         elif provider == "anthropic":
             model = ChatAnthropic(model=model_name, base_url=f"{base_url}/anthropic/", **kwargs)
         elif provider == "bedrock":
-            model = ChatBedrock(model_id=model_name, base_url=base_url, **kwargs)
+            model = ChatBedrockConverse(model_id=model_name, base_url=base_url, **kwargs)
         elif provider == "ollama":
             model = ChatOllama(model=model_name, base_url=base_url, **kwargs)
         else:
