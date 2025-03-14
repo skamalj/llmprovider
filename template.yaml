@@ -5,14 +5,20 @@ Description: >
 
   Sample SAM Template for llm model provider
 
-# More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
   Function:
     Timeout: 180
 
 Resources:
+  ModelProviderApi:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: Prod
+      Auth:
+        ApiKeyRequired: true
+
   ModelProviderFunction:
-    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Type: AWS::Serverless::Function
     Properties:
       PackageType: Image
       MemorySize: 512
@@ -20,11 +26,14 @@ Resources:
       Architectures:
         - x86_64
       Events:
-        HelloWorld:
-          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+        ModelInvoke:
+          Type: Api
           Properties:
+            RestApiId: !Ref ModelProviderApi
             Path: /model
             Method: post
+            Auth:
+              ApiKeyRequired: true
       Policies:
         - AWSSecretsManagerGetSecretValuePolicy:
             SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:AnthropicAPIKey-yZA5FJ
@@ -41,11 +50,45 @@ Resources:
       DockerContext: ./provider
       DockerTag: latest
 
-Outputs:
-  # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
-  # Find out more about other implicit resources you can reference within SAM
-  # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-  ModelProviderdApi:
-    Description: "API Gateway endpoint URL for Prod stage"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/model/"
+  ModelProviderUsagePlan:
+    Type: AWS::Serverless::Api
+    Properties:
+      Name: ModelProviderUsagePlan
+      StageName: Prod
+      DefinitionBody:
+        openapi: "3.0.1"
+        info:
+          title: "ModelProvider API"
+          version: "1.0"
+        paths:
+          /model:
+            post:
+              responses:
+                "200":
+                  description: "Success"
+              security:
+                - api_key: []
+        components:
+          securitySchemes:
+            api_key:
+              type: apiKey
+              name: x-api-key
+              in: header
 
+  ModelProviderApiKey:
+    Type: AWS::ApiGateway::ApiKey
+    Properties:
+      Name: ModelProviderApiKey
+      Enabled: true
+      StageKeys:
+        - RestApiId: !Ref ModelProviderApi
+          StageName: Prod
+
+Outputs:
+  ModelProviderApiUrl:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ModelProviderApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/model/"
+
+  ModelProviderApiKey:
+    Description: "API Key for accessing the Model Provider API"
+    Value: !Ref ModelProviderApiKey
