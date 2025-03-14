@@ -32,7 +32,13 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
         elif provider == "anthropic":
             model = ChatAnthropic(model=model_name, base_url=f"{base_url}/anthropic/", **kwargs)
         elif provider == "bedrock":
-            model = ChatBedrockConverse(model_id=model_name, base_url=base_url, **kwargs)
+            
+            class FlexibleChatBedrockConverse(ChatBedrockConverse):
+                """This model allows extra fields by overriding Config."""
+                class Config:
+                    extra = 'allow'  # Override to allow extra fields
+
+            model = FlexibleChatBedrockConverse(model_id=model_name, base_url=base_url, **kwargs)
         elif provider == "ollama":
             model = ChatOllama(model=model_name, base_url=base_url, **kwargs)
         else:
