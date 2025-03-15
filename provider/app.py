@@ -10,7 +10,7 @@ from langchain_ollama import ChatOllama
 from nemoguardrails import RailsConfig, LLMRails
 from loadsecrets import load_secrets
 
-def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs):
+def get_model(provider: str, model_name: str, messages, **kwargs):
     """
     Creates and returns a pickled model from LangChain for OpenAI, Gemini, Anthropic, AWS Bedrock, Ollama, or Hugging Face.
     
