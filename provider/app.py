@@ -26,21 +26,15 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
         config = RailsConfig.from_path("./config")
 
         if provider == "openai":
-            model = ChatOpenAI(model_name=model_name, base_url=f"{base_url}/openai/", **kwargs)
+            model = ChatOpenAI(model_name=model_name, **kwargs)
         elif provider == "google":
-            model = ChatGoogleGenerativeAI(model=model_name, base_url=f"{base_url}/google", **kwargs)
+            model = ChatGoogleGenerativeAI(model=model_name, **kwargs)
         elif provider == "anthropic":
-            model = ChatAnthropic(model=model_name, base_url=f"{base_url}/anthropic/", **kwargs)
+            model = ChatAnthropic(model=model_name,**kwargs)
         elif provider == "bedrock":
-            
-            class FlexibleChatBedrockConverse(ChatBedrockConverse):
-                """This model allows extra fields by overriding Config."""
-                class Config:
-                    extra = 'allow'  # Override to allow extra fields
-
-            model = FlexibleChatBedrockConverse(model_id=model_name, base_url=base_url, **kwargs)
+            model = ChatBedrockConverse(model_id=model_name, **kwargs)
         elif provider == "ollama":
-            model = ChatOllama(model=model_name, base_url=base_url, **kwargs)
+            model = ChatOllama(model=model_name, **kwargs)
         else:
             raise ValueError(f"Unsupported provider: {provider}")
 
@@ -56,16 +50,11 @@ def get_model(provider: str, model_name: str, messages, base_url: str, **kwargs)
         raise RuntimeError(f"Failed to generate response: {str(e)}") from e
 
 env_secret_map = {
-    "BASE_APIGW_URL": "LLMFunctionUrlSecret",
-    "APIGW_KEY": "LLMGWApiKeySecret",
     "ANTHROPIC_API_KEY": "AnthropicAPIKey",
     "OPENAI_API_KEY":"OpenAIAPIKey",
     "GOOGLE_API_KEY": "GeminiAPIKey"
 }
 load_secrets(env_secret_map)
-
-base_url = os.environ.get("BASE_APIGW_URL")
-default_headers = {"x-api-key": os.environ.get("APIGW_KEY")}
 
 def lambda_handler(event, context):
     try:
@@ -77,10 +66,8 @@ def lambda_handler(event, context):
 
         if not provider or not model_name or not messages:
             raise ValueError("Both 'provider', 'model_name', and 'messages' are required.")
-        if provider == "anthropic":
-            default_headers["anthropic-api-key"] = os.environ.get("ANTHROPIC_API_KEY","XX")
 
-        response = get_model(provider, model_name, messages, base_url=base_url, default_headers=default_headers, **additional_params)
+        response = get_model(provider, model_name, messages, **additional_params)
 
         return {
             "statusCode": 200,
