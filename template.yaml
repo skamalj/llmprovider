@@ -10,10 +10,23 @@ Globals:
     Timeout: 180
 
 Resources:
+  ApiGatewayLogGroup:
+    Type: AWS::Logs::LogGroup
+    Properties:
+      LogGroupName: !Sub "/aws/apigateway/modelproviderapi"
   ModelProviderApi:
     Type: AWS::Serverless::Api
     Properties:
       StageName: "prodv2"
+      AccessLogSetting:
+        DestinationArn: !GetAtt ApiGatewayLogGroup.Arn
+        Format: '{ "requestId":"$context.requestId", "ip": "$context.identity.sourceIp", "userAgent":"$context.identity.userAgent", "requestTime":"$context.requestTime", "httpMethod":"$context.httpMethod", "routeKey":"$context.routeKey", "status":"$context.status", "responseLength":"$context.responseLength", "integrationLatency": "$context.integration.latency"}'
+      MethodSettings:
+        - LoggingLevel: INFO
+          DataTraceEnabled: true
+          MetricsEnabled: true
+          ResourcePath: "/*"
+          HttpMethod: "*"
       Auth:
         UsagePlan:
           CreateUsagePlan: PER_API
@@ -50,9 +63,23 @@ Resources:
         - AWSSecretsManagerGetSecretValuePolicy:
             SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:OpenAIAPIKey-TwhZXt
         - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:LLMFunctionUrlSecret-GjI811
+            SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:AzureAIFoundaryAPIKey-pcen0r
         - AWSSecretsManagerGetSecretValuePolicy:
-            SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:LLMGWApiKeySecret-wlorzL
+            SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:AzureAIFoundaryEndpoint-fxPLMP
+        - AWSSecretsManagerGetSecretValuePolicy:
+            SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:AzureAIFoundaryAPIVersion-YWzCgG
+        - Statement:
+           Effect: Allow
+           Action: bedrock:InvokeModel
+           Resource: "*"
+        - Statement:
+            - Effect: Allow
+              Action:
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: !GetAtt ApiGatewayLogGroup.Arn
+           
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./provider

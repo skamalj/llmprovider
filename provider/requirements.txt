@@ -1,4 +1,4 @@
-requests
+requests>=2.32.3
 langchain
 langchain-openai
 langchain-google-genai
@@ -6,6 +6,8 @@ langchain-anthropic
 langchain-aws
 langchain-community
 langchain-ollama
-dill
+langchain-azure-ai
 nemoguardrails
 boto3
+langchain_guardrails
+langgraph_utils
