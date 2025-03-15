@@ -53,6 +53,11 @@ Resources:
             SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:LLMFunctionUrlSecret-GjI811
         - AWSSecretsManagerGetSecretValuePolicy:
             SecretArn: arn:aws:secretsmanager:ap-south-1:010526271896:secret:LLMGWApiKeySecret-wlorzL
+        - Statement:
+           Effect: Allow
+           Action: bedrock:InvokeModel
+           Resource: "*"
+           
     Metadata:
       Dockerfile: Dockerfile
       DockerContext: ./provider
