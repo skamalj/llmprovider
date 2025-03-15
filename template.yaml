@@ -62,7 +62,3 @@ Outputs:
   ModelProviderApiUrl:
     Description: "API Gateway endpoint URL for Prod stage"
     Value: !Sub "https://${ModelProviderApi}.execute-api.${AWS::Region}.amazonaws.com/ProdV2/model/"
-
-  ModelProviderApiKey:
-    Description: "API Key for accessing the Model Provider API"
-    Value: !Ref ModelProviderApiKey
