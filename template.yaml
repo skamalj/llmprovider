@@ -15,41 +15,15 @@ Resources:
     Properties:
       StageName: "prodv2"
       Auth:
-        ApiKeyRequired: true
-      DefinitionBody:
-        openapi: "3.0.1"
-        info:
-          title: "ModelProvider API"
-          version: "1.0"
-        paths:
-          /model:
-            post:
-              responses:
-                "200":
-                  description: "Success"
-              security:
-                - api_key: []
-              x-amazon-apigateway-integration:
-                type: aws_proxy
-                httpMethod: POST
-                uri: !Sub "arn:aws:apigateway:${AWS::Region}:lambda:path/2015-03-31/functions/${ModelProviderFunction.Arn}/invocations"
-                passthroughBehavior: when_no_match
-                integrationResponses: []
-        components:
-          securitySchemes:
-            api_key:
-              type: apiKey
-              name: x-api-key
-              in: header
-
-  ModelProviderDeployment:
-    Type: AWS::ApiGateway::Deployment
-    Properties:
-      RestApiId: !Ref ModelProviderApi
-      Description: "Deployment for Model Provider API"
-    DependsOn:
-      - ModelProviderApi
-
+        UsagePlan:
+          CreateUsagePlan: PER_API
+          Description: Usage plan for this API
+          Quota:
+            Limit: 500
+            Period: WEEK
+          Throttle:
+            BurstLimit: 100
+            RateLimit: 50
   ModelProviderFunction:
     Type: AWS::Serverless::Function
     Properties:
@@ -62,7 +36,8 @@ Resources:
         ModelInvoke:
           Type: Api
           Properties:
-            RestApiId: !Ref ModelProviderApi
+            RestApiId: 
+              Ref: ModelProviderApi
             Path: /model
             Method: post
             Auth:
@@ -82,15 +57,6 @@ Resources:
       Dockerfile: Dockerfile
       DockerContext: ./provider
       DockerTag: latest
-
-  ModelProviderApiKey:
-    Type: AWS::ApiGateway::ApiKey
-    Properties:
-      Name: ModelProviderApiKey
-      Enabled: true
-      StageKeys:
-        - RestApiId: !Ref ModelProviderApi
-          StageName: "prodv2"
 
 Outputs:
   ModelProviderApiUrl:
