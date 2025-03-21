@@ -78,6 +78,10 @@ Resources:
                 - logs:CreateLogGroup
                 - logs:CreateLogStream
                 - logs:PutLogEvents
+                - logs:DescribeLogGroups,
+                - logs:DescribeLogStreams,
+                - logs:GetLogEvents,
+                - logs:FilterLogEvents
               Resource: !GetAtt ApiGatewayLogGroup.Arn
            
     Metadata:

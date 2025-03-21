@@ -64,8 +64,8 @@ def get_model(provider: str, model_name: str, messages, tools,  **kwargs):
         chain = prompt | guardrail_chain | nemorails.generate_or_exit
 
         # Invoke the guardrail chain
-        response = [chain.invoke({})]
-        return [json.dumps(AIMessage(msg).dict()) if isinstance(msg, str) else json.dumps(msg.dict()) for msg in response]
+        response = chain.invoke({})
+        return response.dict()
 
     except Exception as e:
         error_details = traceback.format_exc()
