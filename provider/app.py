@@ -12,7 +12,7 @@ from langchain_guardrails import NemoRails
 from loadsecrets import load_secrets
 from langchain_core.prompts import ChatPromptTemplate
 from langchain.schema import AIMessage
-from langgraph_utils import create_tools_json, json_to_structured_tools
+from langgraph_utils import json_to_structured_tools, messages_to_chatprompt
 
 
 def get_model(provider: str, model_name: str, messages, tools,  **kwargs):
@@ -53,6 +53,8 @@ def get_model(provider: str, model_name: str, messages, tools,  **kwargs):
         
         if tools:
             structured_tools = json_to_structured_tools(tools)
+        
+        chatprompt = messages_to_chatprompt(messages)
             
         model_with_tools = model.bind_tools(structured_tools) if tools else model
 
@@ -60,8 +62,8 @@ def get_model(provider: str, model_name: str, messages, tools,  **kwargs):
         nemorails = NemoRails(config=rails_config, llm=model, generator_llm=model_with_tools, options={"rails": ["input"]})
 
         guardrail_chain = nemorails.create_guardrail_chain()
-        prompt = ChatPromptTemplate.from_messages(messages)
-        chain = prompt | guardrail_chain | nemorails.generate_or_exit
+        
+        chain = chatprompt | guardrail_chain | nemorails.generate_or_exit
 
         # Invoke the guardrail chain
         response = chain.invoke({})
