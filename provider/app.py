@@ -53,13 +53,15 @@ def get_model(provider: str, model_name: str, messages, tools,  **kwargs):
         
         if tools:
             structured_tools = json_to_structured_tools(tools)
+    
+        nemo_model = ChatOpenAI(model_name=os.environ["GUARDRAIL_MODEL"])
         
         chatprompt = messages_to_chatprompt(messages)
             
         model_with_tools = model.bind_tools(structured_tools) if tools else model
 
         # Instantiate NemoRails with configuration and LLM
-        nemorails = NemoRails(config=rails_config, llm=model, generator_llm=model_with_tools, options={"rails": ["input"]})
+        nemorails = NemoRails(config=rails_config, llm=nemo_model, generator_llm=model_with_tools, options={"rails": ["input"]})
 
         guardrail_chain = nemorails.create_guardrail_chain()
         

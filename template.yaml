@@ -45,6 +45,9 @@ Resources:
       Timeout: 180
       Architectures:
         - x86_64
+      Environment:
+        Variables:
+          GUARDRAILS_MODEL: "gpt-4"
       Events:
         ModelInvoke:
           Type: Api
